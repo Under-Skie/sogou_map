@@ -1,0 +1,100 @@
+<html>
+<head>
+  <style type="text/css">
+html {height: auto;}
+body {height: auto;margin: 0;padding: 0;}
+.map_canvas {width:1000px;height: 500px;position: absolute;}
+.brand_one{
+  white-space: nowrap;
+  color: #fff;
+  font-weight: bold;
+  font-size: 26px;
+  padding: 0 13px;
+}
+</style>
+</head>
+<body>
+    <div class="map_canvas"></div>
+    <script src="http://cdn.bootcss.com/jquery/3.0.0-beta1/jquery.js"></script>
+    <script type="text/javascript" src="http://api.go2map.com/maps/js/api_v2.5.1.js"></script>
+    <script type="text/javascript" src="js/sogou_map.js"></script>
+    <script type="text/javascript" src="js/fakeData1.js"></script>
+    <script>
+
+        var mapOptions = {center:[12189342.59, 3520474.36],zoom:16,address:{city:'恩施'},centerOffset:{x:700,y:200}};
+        SogouMap.prototype.markerListener = function(isSearch,fromPoint){
+          console.log('marker:',this);
+          if(fromPoint){
+              var point = new sogou.maps.Point(parseFloat(this.position.x),parseFloat(this.position.y));
+              restroreExistActiveMarker();
+              var size = new sogou.maps.Size(38,54);
+              var markerImage= "./images/marker_yellow.png";
+              var  anchor=new sogou.maps.Point(18,26),origin =new sogou.maps.Point(0,0)
+              this.setIcon( new sogou.maps.MarkerImage(markerImage,size,origin,anchor,size));
+          }
+          map.setCenter(point);
+          var id = this.id;
+          var container = this.map.getContainer();
+              //@TODO 根据ID获取数据
+              var  data = {
+                id:id,
+                isSearch:isSearch,
+
+            };
+
+
+
+        };
+        function removeExistActiveMarker(){
+          $('img[src="/assets/maps/marker_yellow.png"][usemap]').parent().remove();
+          $('img[src="/assets/maps/marker_yellow.png"]').remove();
+       }
+       function restroreExistActiveMarker(){
+       // $('img[src="/assets/maps/marker_yellow.png"][usemap]').parent().remove();
+       $('img[src="/assets/maps/marker_yellow.png"]').attr('src',"/assets/maps/maker_white.png").width(47).height(53).css({
+         width:47,
+         height:53
+       });
+   }
+
+   var map = new SogouMap(".map_canvas");
+    map.init(mapOptions).done(function(){//初始化地图
+    var center = new sogou.maps.Point(mapOptions.center[0],mapOptions.center[1])
+    // map.restoreLastPoints(point0);
+    map.setCenter(center);
+
+    map.initialPoints(myPoints);//初始化坐标点
+    map.initialBrands(schoolArea);//初始化区域标识
+    map.addListener('zoom_changed',function(){
+        console.log('zoom changed:',getZoom());
+    });
+    map.addListener( 'click', function(event) {
+    //获取点击位置的坐标
+    console.log('event:',event);
+          function callback(a){
+              if(a.status=='ok'){
+                  console.log('point result:',a.data);
+              // var geometry=a.data[0];
+              // new sogou.maps.Marker({
+              //    map:map,
+              //    title:geometry.address,
+              //    position:geometry.location
+              // });
+          }
+
+      }
+      var geo=new sogou.maps.Geocoder();
+      var request={
+          location:{
+            points:[event.point],
+            type:0
+        }};
+        geo.geocode(request,callback);
+      });
+  map.addListener('zoom',function(){
+      console.log('zoom:',this.getZoom());
+  });
+});
+</script>
+</body>
+</html>

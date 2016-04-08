@@ -1,0 +1,38 @@
+<html>
+<head>
+  <style type="text/css">
+html {height: auto;}
+body {height: auto;margin: 0;padding: 0;}
+.map_canvas {width:1000px;height: 500px;position: absolute;}
+.brand_one{
+  white-space: nowrap;
+  color: #fff;
+  font-weight: bold;
+  font-size: 26px;
+  padding: 0 13px;
+}
+</style>
+</head>
+<body>
+    <div class="map_canvas"></div>
+    <script src="http://cdn.bootcss.com/jquery/3.0.0-beta1/jquery.js"></script>
+    <script type="text/javascript" src="http://api.go2map.com/maps/js/api_v2.5.1.js"></script>
+    <script type="text/javascript" src="js/sogou_map.js"></script>
+    <script type="text/javascript" src="js/fakeData1.js"></script>
+    <script>
+
+    var mapOptions = {center:[12189342.59, 3520474.36],zoom:16,address:{city:'恩施'},centerOffset:{x:0,y:0}};
+    var map = new SogouMap(".map_canvas");
+    map.init(mapOptions).done(function(){//初始化地图
+    var center = new sogou.maps.Point(mapOptions.center[0],mapOptions.center[1])
+    // map.restoreLastPoints(point0);
+    map.setCenter(center);
+
+    // map.initialPoints(myPoints);//初始化坐标点
+    map.initialBrands(schoolArea);//初始化区域标识
+    map.drawPath(studentPathPoints);
+
+});
+</script>
+</body>
+</html>
